@@ -380,7 +380,19 @@ static bool test_vector_push() {
 	RVector v;
 	r_vector_init (&v, 4, NULL, NULL);
 
-	ut32 e = 1337;
+	ut32 e;
+	ut32 *p = r_vector_push (&v, NULL);
+	*p = 1337;
+	mu_assert_eq_fmt (v.len, 1UL, "r_vector_push (null, empty, assign) => len == 1", "%lu");
+	e = *((ut32 *)r_vector_index_ptr (&v, 0));
+	mu_assert_eq (e, 1337, "r_vector_push (null, empty, assign) => content");
+
+	r_vector_clear (&v);
+
+
+	r_vector_init (&v, 4, NULL, NULL);
+
+	e = 1337;
 	e = *((ut32 *)r_vector_push (&v, &e));
 	mu_assert_eq_fmt (v.len, 1UL, "r_vector_push (empty) => len == 1", "%lu");
 	mu_assert_eq (e, 1337, "r_vector_push (empty) => content at returned ptr");
