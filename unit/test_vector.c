@@ -528,6 +528,27 @@ static bool test_vector_shrink() {
 	mu_end;
 }
 
+static bool test_vector_foreach() {
+	RVector v;
+	init_test_vector (&v, 5, 5, NULL, NULL);
+
+	int i = 1;
+	ut32 *it;
+	int acc[5] = {0};
+	r_vector_foreach (&v, it) {
+		mu_assert_eq (acc[*it], 0, "unset acc element");
+		acc[*it] = i++;
+	}
+
+	for (i = 0; i < 5; i++) {
+		mu_assert_eq (acc[i], i + 1, "acc");
+	}
+
+	r_vector_clear (&v);
+
+	mu_end;
+}
+
 static bool test_pvector_init() {
 	RPVector v;
 	r_pvector_init (&v, (void *)1337);
@@ -984,6 +1005,7 @@ static int all_tests() {
 	mu_run_test (test_vector_push_front);
 	mu_run_test (test_vector_reserve);
 	mu_run_test (test_vector_shrink);
+	mu_run_test (test_vector_foreach);
 
 	mu_run_test (test_pvector_init);
 	mu_run_test (test_pvector_new);
